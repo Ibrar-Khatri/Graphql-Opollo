@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import { useQuery } from "@apollo/client";
+import React, { useEffect, useState } from "react";
+import { GET_ALL_STUDENTS } from "../graphql/queries";
 import Form from "./form/form";
 import "./student.css";
 
@@ -8,7 +10,9 @@ export default function Student() {
 	let [subjects, setSubjects] = useState();
 	let [allStudents, setAllStudents] = useState([]);
 	let [index, setIndex] = useState();
-
+	
+	let  students = useQuery(GET_ALL_STUDENTS)
+	console.log(students)
 	function operationPerform(operation, ind) {
 		if (operation === "delete") {
 			setAllStudents(allStudents.filter((_, i) => i !== ind));
@@ -19,6 +23,13 @@ export default function Student() {
 			setIndex(ind);
 		}
 	}
+
+	useEffect(()=>{
+		if(students.data){
+			console.log(students)
+		}
+		console.log('hello')
+	},[])
 
 	return (
 		<div>

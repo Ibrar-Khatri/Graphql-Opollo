@@ -1,14 +1,25 @@
 const { PubSub } = require("graphql-subscriptions");
 const pubsub = new PubSub();
-const studentModal = require("../module/studentModal");
+const { studentModal } = require("../module/studentModal");
 
 const resolvers = {
-	// Query: {
-	// 	students: () => students,
-	// },
+	Query: {
+		getAllStudents: async () => {
+
+			let allStudnets =await studentModal.find({}, ((err, stu) => {
+				if (err) {
+					console.log('error in gettting all students')
+				}
+				// console.log(stu)
+				return stu
+			}))
+			console.log(allStudnets)
+			return allStudnets
+		},
+	},
 	Mutation: {
 		addStudent: async (e, { input }) => {
-			let addNewStudentInDB = new studentModal.studentModal(input);
+			let addNewStudentInDB = new studentModal(input);
 			let studentAdded;
 			await addNewStudentInDB.save((err, stu) => {
 				if (err) {

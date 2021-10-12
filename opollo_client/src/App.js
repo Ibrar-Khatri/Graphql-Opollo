@@ -1,7 +1,7 @@
 import logo from "./logo.svg";
 import "./App.css";
 import { ApolloProvider } from "@apollo/client";
-import client from "./config/graphqlConfig";
+import client from "./graphqlConfig/graphqlConfig";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Student from "./component/student";
 
