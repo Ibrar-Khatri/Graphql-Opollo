@@ -1,0 +1,32 @@
+.form {
+	width: 500px;
+	justify-content: center;
+	margin-left: auto;
+	margin-right: auto;
+}
+.dropdown {
+	display: inline;
+	display: flex;
+	justify-content: space-evenly;
+}
+.classText {
+	display: flex;
+	align-items: center;
+}
+.row {
+	display: flex;
+	justify-content: flex-end;
+}
+.check_box {
+	display: flex;
+
+	justify-content: space-around;
+}
+.tableDiv {
+	display: flex;
+	justify-content: center;
+	margin-top: 100px;
+}
+.table {
+	max-width: 80vw;
+}
