@@ -5,16 +5,8 @@ const { studentModal } = require("../module/studentModal");
 const resolvers = {
 	Query: {
 		getAllStudents: async () => {
-
-			let allStudnets =await studentModal.find({}, ((err, stu) => {
-				if (err) {
-					console.log('error in gettting all students')
-				}
-				// console.log(stu)
-				return stu
-			}))
-			console.log(allStudnets)
-			return allStudnets
+			let allStudnets = await studentModal.find({});
+			return allStudnets;
 		},
 	},
 	Mutation: {
@@ -25,42 +17,50 @@ const resolvers = {
 				if (err) {
 					console.log("Error in saving students");
 				}
-				pubsub.publish("STUDENTADDED", { newStudent: stu });
+				pubsub.publish("NEWSTUDENTADDED", { newStudent: stu });
 				return;
 			});
 		},
-		// updateStudent: (e, { input }) => {
-		// 	students.forEach((stu) => {
-		// 		if (stu.id === input.id) {
-		// 			stu.name = input.name;
-		// 			stu.age = input.age;
-		// 		}
-		// 		console.log(stu);
-		// 	});
-		// 	pubsub.publish("UPDATESTUDENT", { updateStud: input });
-		// 	return input;
-		// },
-		// deleteStudent: (e, { input }) => {
-		// 	console.log(input.id);
-		// 	students.forEach((stu, i) => {
-		// 		if (stu.id === input.id) {
-		// 			students.splice(i, 1);
-		// 		}
-		// 	});
-		// 	pubsub.publish("STUDENTREMOVED", { removeStud: input });
-		// 	return input;
-		// },
+		deleteStudent: async (e, { input }) => {
+			console.log("inputed id", input.id);
+			studentModal.deleteOne({ _id: input.id }, (err, studenDeleted) => {
+				if (err) {
+					console.log("Error in Student Delete");
+				}
+				console.log(studenDeleted);
+				pubsub.publish("STUDENTREMOVED", { removeStud: { id: input.id } });
+				return;
+			});
+		},
+		updateStudent: async (e, { input }) => {
+			let updates = {
+				name: input.name,
+				stuClass: input.stuClass,
+				subjects: input.subjects,
+			};
+			studentModal.updateMany(
+				{ _id: input.id },
+				updates,
+				(err, studendUpdated) => {
+					if (err) {
+						console.log("Error in Student Delete");
+					}
+					pubsub.publish("STUDENTUDPATED", { updateStud: input });
+					return;
+				},
+			);
+		},
 	},
 	Subscription: {
 		newStudent: {
-			subscribe: () => pubsub.asyncIterator(["STUDENTADDED"]),
+			subscribe: () => pubsub.asyncIterator(["NEWSTUDENTADDED"]),
 		},
-		// removeStud: {
-		// 	subscribe: () => pubsub.asyncIterator(["STUDENTREMOVED"]),
-		// },
-		// updateStud: {
-		// 	subscribe: () => pubsub.asyncIterator(["UPDATESTUDENT"]),
-		// },
+		removeStud: {
+			subscribe: () => pubsub.asyncIterator(["STUDENTREMOVED"]),
+		},
+		updateStud: {
+			subscribe: () => pubsub.asyncIterator(["STUDENTUDPATED"]),
+		},
 	},
 };
 

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const todoSchema = {
+const studentSchema = {
 	name: String,
 	stuClass: String,
 	subjects: {
@@ -10,7 +10,7 @@ const todoSchema = {
 	},
 };
 
-module.exports.studentModal = new mongoose.model("todo", todoSchema);
+module.exports.studentModal = new mongoose.model("students", studentSchema);
 
 // module.exports = {
 // 	studentModal: studentModal,

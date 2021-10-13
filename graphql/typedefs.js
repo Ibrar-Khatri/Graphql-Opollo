@@ -1,16 +1,16 @@
 const { gql } = require("apollo-server");
 
 const typeDefs = gql`
-	type sucjectSchema {
+	type subjectSchema {
 		english: String
 		urdu: String
 		math: String
 	}
 	type studentSchema {
-		_id: String
+		id: ID!
 		name: String
 		stuClass: String
-		subjects: sucjectSchema
+		subjects: subjectSchema
 	}
 	input subjectsInput {
 		english: String
@@ -22,26 +22,27 @@ const typeDefs = gql`
 		stuClass: String
 		subjects: subjectsInput
 	}
-	input updateStu {
-		id: Int
+	input updateStud {
+		id: ID
 		name: String
-		age: Int
+		stuClass: String
+		subjects: subjectsInput
 	}
 	input deleteStu {
-		id: Int
+		id: ID
 	}
 	type Query {
 		getAllStudents: [studentSchema]
 	}
 	type Mutation {
 		addStudent(input: studentInput): studentSchema
-		# updateStudent(input: updateStu): Student
-		# deleteStudent(input: deleteStu): Student
+		deleteStudent(input: deleteStu): studentSchema
+		updateStudent(input: updateStud): studentSchema
 	}
 	type Subscription {
 		newStudent: studentSchema
-		# removeStud: Student
-		# updateStud: Student
+		removeStud: studentSchema
+		updateStud: studentSchema
 	}
 `;
 

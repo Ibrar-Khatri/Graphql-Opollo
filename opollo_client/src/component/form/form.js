@@ -1,21 +1,26 @@
+import { useMutation } from "@apollo/client";
 import React, { useEffect, useState } from "react";
+import { ADD_NEW_STUDENT, UPDATE_STUDENT } from "../../graphql/mutations";
 
 export default function Form(props) {
+	let [addStudent] = useMutation(ADD_NEW_STUDENT);
+	let [updateStudent] = useMutation(UPDATE_STUDENT);
 	let [english, setEnglish] = useState("");
 	let [urdu, setUrdu] = useState("");
 	let [math, setMath] = useState("");
-	let [isEdit, setIsEdit] = useState(false);
 	let [operation, setOperation] = useState(false);
+
 	let {
 		name,
 		setName,
 		stuClass,
 		setStuClass,
 		subjects,
-		setSubjects,
 		allStudents,
 		setAllStudents,
-		index,
+		id,
+		isEdit,
+		setIsEdit,
 	} = props;
 
 	function addNewStudent(e) {
@@ -30,22 +35,25 @@ export default function Form(props) {
 					math: math ? "Math" : "",
 				},
 			};
-			setAllStudents([...allStudents, student]);
+			console.log(student);
+			addStudent({
+				variables: student,
+			});
 		} else {
 			setIsEdit(false);
-			setAllStudents(
-				allStudents.map((stu, i) => {
-					console.log(stu);
-					if (i === index) {
-						stu.name = name;
-						stu.stuClass = stuClass;
-						subjects.english = english ? "English" : "";
-						subjects.urdu = urdu ? "Urdu" : "";
-						subjects.math = math ? "Math" : "";
-					}
-					return stu;
-				}),
-			);
+			let updates = {
+				id,
+				name,
+				stuClass,
+				subjects: {
+					english: english ? "English" : "",
+					urdu: urdu ? "Urdu" : "",
+					math: math ? "Math" : "",
+				},
+			};
+			updateStudent({
+				variables: updates,
+			});
 		}
 		setEnglish("");
 		setUrdu("");

@@ -1,6 +1,12 @@
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery, useSubscription } from "@apollo/client";
 import React, { useEffect, useState } from "react";
+import { DELETE_STUDENT } from "../graphql/mutations";
 import { GET_ALL_STUDENTS } from "../graphql/queries";
+import {
+	NEW_STUDENT_ADDED,
+	STUDENT_DELETED,
+	STUDEN_UPDATED,
+} from "../graphql/subscription";
 import Form from "./form/form";
 import "./student.css";
 
@@ -9,27 +15,67 @@ export default function Student() {
 	let [stuClass, setStuClass] = useState("one");
 	let [subjects, setSubjects] = useState();
 	let [allStudents, setAllStudents] = useState([]);
-	let [index, setIndex] = useState();
-	
-	let  students = useQuery(GET_ALL_STUDENTS)
-	console.log(students)
-	function operationPerform(operation, ind) {
+	let [id, setID] = useState();
+	let [isEdit, setIsEdit] = useState(false);
+
+	let students = useQuery(GET_ALL_STUDENTS);
+	let newStudentAdded = useSubscription(NEW_STUDENT_ADDED);
+	let studentDeleted = useSubscription(STUDENT_DELETED);
+	let studentUpdated = useSubscription(STUDEN_UPDATED);
+	let [deleteStudent] = useMutation(DELETE_STUDENT);
+
+	function operationPerform(operation, stu) {
 		if (operation === "delete") {
-			setAllStudents(allStudents.filter((_, i) => i !== ind));
+			setName("");
+			setStuClass("");
+			setSubjects("");
+			setID("");
+			setIsEdit(false);
+			deleteStudent({
+				variables: { id: stu.id },
+			});
 		} else {
-			setName(allStudents[ind].name);
-			setStuClass(allStudents[ind].stuClass);
-			setSubjects(allStudents[ind].subjects);
-			setIndex(ind);
+			setName(stu.name);
+			setStuClass(stu.stuClass);
+			setSubjects(stu.subjects);
+			setID(stu.id);
 		}
 	}
 
-	useEffect(()=>{
-		if(students.data){
-			console.log(students)
+	useEffect(() => {
+		if (students.data) {
+			setAllStudents(students.data?.getAllStudents);
 		}
-		console.log('hello')
-	},[])
+	}, [students.data]);
+	useEffect(() => {
+		if (newStudentAdded.data) {
+			console.log(newStudentAdded.data);
+			let update = [...allStudents, newStudentAdded.data?.newStudent];
+			setAllStudents([...allStudents, newStudentAdded.data?.newStudent]);
+		}
+	}, [newStudentAdded.data]);
+	useEffect(() => {
+		if (studentDeleted.data) {
+			console.log(studentDeleted.data.removeStud.id);
+			let update = allStudents.filter(
+				(stu) => stu.id !== studentDeleted.data.removeStud.id,
+			);
+			setAllStudents(update);
+		}
+	}, [studentDeleted.data]);
+	useEffect(() => {
+		if (studentUpdated.data) {
+			console.log(studentUpdated.data.updateStud.id);
+			let update = allStudents.map((stu) => {
+				// console.log(stu);
+				if (stu.id === studentUpdated.data.updateStud.id) {
+					return studentUpdated.data.updateStud;
+				}
+				return stu;
+			});
+			setAllStudents(update);
+		}
+	}, [studentUpdated.data]);
 
 	return (
 		<div>
@@ -42,7 +88,9 @@ export default function Student() {
 				setSubjects={setSubjects}
 				allStudents={allStudents}
 				setAllStudents={setAllStudents}
-				index={index}
+				id={id}
+				isEdit={isEdit}
+				setIsEdit={setIsEdit}
 			/>
 			<div className="tableDiv">
 				<table class="table table-striped">
@@ -58,22 +106,22 @@ export default function Student() {
 					</thead>
 					<tbody>
 						{allStudents?.map((stu, i) => (
-							<tr>
+							<tr key={i}>
 								<th scope="row">{i + 1}</th>
 								<td>{stu.name}</td>
 								<td>{stu.stuClass}</td>
-								<td>{`${stu.subjects.english}  ${stu.subjects?.urdu} ${stu.subjects?.math}`}</td>
+								<td>{`${stu.subjects?.english}  ${stu.subjects?.urdu} ${stu.subjects?.math}`}</td>
 								<td>
 									<button
 										className="btn btn-primary"
-										onClick={() => operationPerform("delete", i)}
+										onClick={() => operationPerform("delete", stu)}
 									>
 										Delete
 									</button>
 								</td>
 								<td>
 									<button
-										onClick={() => operationPerform("edit", i)}
+										onClick={() => operationPerform("edit", stu)}
 										className="btn btn-primary"
 									>
 										Edit
