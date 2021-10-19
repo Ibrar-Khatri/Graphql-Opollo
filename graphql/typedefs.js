@@ -33,6 +33,7 @@ const typeDefs = gql`
 	}
 	type Query {
 		getAllStudents: [studentSchema]
+		searchedStudent(input: studentInput): [studentSchema]
 	}
 	type Mutation {
 		addStudent(input: studentInput): studentSchema

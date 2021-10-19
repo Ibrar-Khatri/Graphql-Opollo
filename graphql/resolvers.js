@@ -8,6 +8,22 @@ const resolvers = {
 			let allStudnets = await studentModal.find({});
 			return allStudnets;
 		},
+		searchedStudent: async (e, { input }) => {
+			console.log(input)
+			// let query = {}
+			// if (input.stuClass) query = { ...query, stuClass: input.stuClass }
+			// Object.entries(input.subjects).map(item => query[item[0]] = item[1])
+			// console.log(query)
+			return await studentModal.find({
+				$or: [
+					{ stuClass: input.stuClass },
+					{ english: input.subjects.english },
+					{ urdu: input.subjects.urdu },
+					{ math: input.subjects.math },
+					
+				]
+			})
+		},
 	},
 	Mutation: {
 		addStudent: async (e, { input }) => {
