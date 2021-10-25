@@ -10,9 +10,10 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"graphql": "^15.6.1",
 		"@graphql-tools/schema": "^8.2.0",
 		"apollo-server": "^3.3.0",
+		"cors": "^2.8.5",
+		"graphql": "^15.6.1",
 		"graphql-subscriptions": "^1.2.1",
 		"mongoose": "^6.0.10",
 		"nodemon": "^2.0.13",

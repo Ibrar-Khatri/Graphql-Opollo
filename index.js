@@ -1,5 +1,6 @@
 const { createServer } = require("http");
 const { execute, subscribe } = require("graphql");
+const cors = require("cors");
 const { SubscriptionServer } = require("subscriptions-transport-ws");
 const { makeExecutableSchema } = require("@graphql-tools/schema");
 const express = require("express");
@@ -15,6 +16,17 @@ const dbHelper = require("./DBHelper/DBHelper");
 		typeDefs,
 		resolvers,
 	});
+	app.use(cors());
+	app.use((req, res, next) => {
+		res.header("Access-Control-Allow-Origin", "*");
+		res.header(
+			"Access-Control-Allow-Headers",
+			"Origin, X-Requested-With, Content-Type, Accept",
+		);
+		res.header("Access-Control-Allow-Methods", "*");
+		next();
+	});
+
 	const server = new ApolloServer({
 		schema,
 		plugins: [
@@ -36,9 +48,9 @@ const dbHelper = require("./DBHelper/DBHelper");
 	await server.start();
 	server.applyMiddleware({ app });
 
-	const PORT = 4000;
-	httpServer.listen(PORT, () => {
-		console.log(`Server is now running on http://localhost:${PORT}/graphql`);
+	const port = process.env.PORT || 3000;
+	httpServer.listen(port, () => {
+		console.log(`Server is now running on ${port}`);
 		dbHelper.dbConnector();
 	});
 })();

@@ -31,6 +31,12 @@ const typeDefs = gql`
 	input deleteStu {
 		id: ID
 	}
+	# input searchedInput {
+	# 	stuClass: String
+	# 	english: String
+	# 	urdu: String
+	# 	math: String
+	# }
 	type Query {
 		getAllStudents: [studentSchema]
 		searchedStudent(input: studentInput): [studentSchema]
