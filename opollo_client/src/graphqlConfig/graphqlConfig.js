@@ -4,13 +4,13 @@ import { getMainDefinition } from "@apollo/client/utilities";
 import { WebSocketLink } from "@apollo/client/link/ws";
 
 const wsLink = new WebSocketLink({
-	uri: "ws://1700-39-48-195-165.ngrok.io/graphql",
+	uri: "ws://8766-39-48-209-10.ngrok.io/graphql",
 	options: {
 		reconnect: true,
 	},
 });
 const httpLink = new HttpLink({
-	uri: "https://1700-39-48-195-165.ngrok.io/graphql",
+	uri: "http://8766-39-48-209-10.ngrok.io/graphql",
 });
 
 const splitLink = split(

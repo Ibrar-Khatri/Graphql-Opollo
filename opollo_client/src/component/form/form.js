@@ -24,6 +24,7 @@ export default function Form(props) {
 	} = props;
 
 	function addNewStudent(e) {
+		console.log(stuClass)
 		e.preventDefault();
 		if (operation === "add") {
 			let student = {

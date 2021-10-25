@@ -12,7 +12,7 @@ import "./student.css";
 
 export default function Student() {
 	let [name, setName] = useState();
-	let [stuClass, setStuClass] = useState("one");
+	let [stuClass, setStuClass] = useState("One");
 	let [subjects, setSubjects] = useState();
 	let [allStudents, setAllStudents] = useState([]);
 	let [id, setID] = useState();

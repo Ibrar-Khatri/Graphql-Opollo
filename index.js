@@ -48,7 +48,7 @@ const dbHelper = require("./DBHelper/DBHelper");
 	await server.start();
 	server.applyMiddleware({ app });
 
-	const port = process.env.PORT || 3000;
+	const port = process.env.PORT || 3002;
 	httpServer.listen(port, () => {
 		console.log(`Server is now running on ${port}`);
 		dbHelper.dbConnector();
